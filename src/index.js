@@ -5,7 +5,19 @@ import connetDB from "./db/index.js";
 
 dotenv.config({ path: "./env" });
 
-connetDB();
+connetDB()
+  .then(() => {
+    app.on("error", (error) => {
+      console.log("ERROR:", error);
+      throw error;
+    });
+
+    app.listen(process.env.PORT || 8000);
+    console.log(`server is running at ${process.env.PORT}`);
+  })
+  .catch((e) => {
+    console.log(`MONGO DB CONNECTION FAILED`, e);
+  });
 
 /*
 import express from "express";
