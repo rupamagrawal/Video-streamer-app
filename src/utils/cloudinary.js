@@ -19,7 +19,7 @@ const uplodeOnCloudinary = async (localFilePath) => {
     // console.log("File has been uploded successfully ", response);
     // console.log("response: ");
     // console.log(response);
-    
+
     fs.unlinkSync(localFilePath);
     return response;
   } catch (error) {
@@ -28,4 +28,15 @@ const uplodeOnCloudinary = async (localFilePath) => {
   }
 };
 
-export { uplodeOnCloudinary };
+const deleteFromCloudinary = async (pId) => {
+  try {
+    if (!pId) return null;
+    const result = await cloudinary.uploader.destroy(pId);
+    return result;
+  } catch (error) {
+    console.error("Cloudinary deletion failed:", error.message);
+    return null;
+  }
+};
+
+export { uplodeOnCloudinary, deleteFromCloudinary };
