@@ -152,8 +152,12 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      // $set: {
+      //   refreshToken: undefined,
+      // },
+      //or
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -225,7 +229,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
   const user = await User.findById(req.user?._id);
-  const isPasswordCorrect = await User.isPasswordCorrect(oldPassword);
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Invalid old Password");
@@ -293,10 +297,9 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        avatar: {
-          url: avatar.secure_url, // URL for frontend
-          public_id: avatar.public_id, // for deletion next time
-        },
+        avatar: avatar.secure_url,
+        // url: avatar.secure_url, // URL for frontend
+        // public_id: avatar.public_id, // for deletion next time
       },
     },
     { new: true }
@@ -313,7 +316,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Cover Image is Required");
   }
 
-  const coverImage = await uplodeOnCloudinary(coverImage);
+  const coverImage = await uplodeOnCloudinary(coverImageLocalPath);
   if (!coverImage.url) {
     throw new ApiError(400, "Error while uploding Cover Image");
   }
@@ -322,7 +325,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     req.user?._id,
     {
       $set: {
-        coverImage: coverImage.url,
+        coverImage: coverImage.secure_url,
       },
     },
     { new: true }
@@ -396,13 +399,14 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
   if (!channel?.length) {
     throw new ApiError(404, "Channel does not exists!");
   }
-
-  console.log(channel);
+  // console.log("This is Channel Details:");
+  // console.log(channel);
+  // console.log(" Channel Details END!");
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, channel[0], "User channel fetched succ essully!")
+      new ApiResponse(200, channel[0], "User channel fetched successully!")
     );
 });
 
@@ -412,11 +416,13 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       $match: {
         _id: new mongoose.Types.ObjectId(req.user._id),
       },
+    },
+    {
       $lookup: {
         from: "videos",
         localField: "watchHistory",
         foreignField: "_id",
-        as: "WatchHistory",
+        as: "watchHistory",
         pipeline: [
           {
             $lookup: {
@@ -453,8 +459,8 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        user[0].watchHistory,
-        "Watch Hostor Fetched Successfully!"
+        user[0]?.watchHistory,
+        "Watch History Fetched Successfully!"
       )
     );
 });
