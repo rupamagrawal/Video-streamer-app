@@ -21,4 +21,5 @@ import userRouter from "./routes/users.route.js";
 //route declaration
 app.use("/api/v1/users", userRouter);
 //  http://localhost:8000/api/v1/users/regiter
+
 export { app };
