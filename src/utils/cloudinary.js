@@ -28,6 +28,21 @@ const uplodeOnCloudinary = async (localFilePath) => {
   }
 };
 
+// Extract public_id from Cloudinary URL
+const extractPublicId = (url) => {
+  try {
+    if (!url) return null;
+    // Example: https://res.cloudinary.com/demo/image/upload/v1234567890/foldername/abcd1234.jpg
+    const parts = url.split("/");
+    const fileWithExt = parts.pop(); // abcd1234.jpg
+    const publicId = fileWithExt.split(".")[0]; // abcd1234
+    return publicId;
+  } catch (error) {
+    console.error("Error extracting public ID:", error.message);
+    return null;
+  }
+};
+
 const deleteFromCloudinary = async (pId) => {
   try {
     if (!pId) return null;
@@ -39,4 +54,4 @@ const deleteFromCloudinary = async (pId) => {
   }
 };
 
-export { uplodeOnCloudinary, deleteFromCloudinary };
+export { uplodeOnCloudinary, deleteFromCloudinary, extractPublicId };
