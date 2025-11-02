@@ -173,7 +173,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     if (video.thumbnail) {
       const oldThumbnail = extractPublicId(video.thumbnail);
       if (oldThumbnail) {
-        await deleteFromCloudinary(video.thumbnail);
+        await deleteFromCloudinary(oldThumbnail);
       }
     }
     video.thumbnail = thumbnailUpload.url;
