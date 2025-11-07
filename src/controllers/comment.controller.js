@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
-import { asyncHandler } from "../utils/asynchHandler";
-import { ApiError } from "../utils/ApiErrors";
-import { Comment, Video } from "../models/comment.model";
-import { ApiResponse } from "../utils/ApiResponse";
+import { asyncHandler } from "../utils/asynchHandler.js";
+import { ApiError } from "../utils/ApiErrors.js";
+import { Comment } from "../models/comment.model.js";
+import { Video } from "../models/video.model.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const getVideoComments = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -137,31 +138,30 @@ const updateComment = asyncHandler(async (req, res) => {
 
 const deleteComment = asyncHandler(async (req, res) => {
   // TODO: delete a comment
-  const {commentId} = req.params;
-  if(!commentId){
+  const { commentId } = req.params;
+  if (!commentId) {
     throw new ApiError(400, "Comment ID not found!");
   }
 
   const comment = await Comment.findById(commentId);
-  if(!comment){
-    throw new ApiError(404, "Comment not found!")
+  if (!comment) {
+    throw new ApiError(404, "Comment not found!");
   }
 
   const userId = req.user?._id;
-  if(!userId){
+  if (!userId) {
     throw new ApiError(401, "Unauthorized user");
   }
 
-  if(comment.owner.toString() !== userId.toString()){
+  if (comment.owner.toString() !== userId.toString()) {
     throw new ApiError(403, "You can only edit your own comments!");
   }
 
   await comment.deleteOne();
 
   return res
-  .status(200)
-  .json(new ApiResponse(200, {}, "Comment deleted Succcessfully!"))
-
+    .status(200)
+    .json(new ApiResponse(200, {}, "Comment deleted Succcessfully!"));
 });
 
 export { getVideoComments, addComment, updateComment, deleteComment };

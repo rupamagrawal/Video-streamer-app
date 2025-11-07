@@ -2,7 +2,7 @@ import { isValidObjectId, mongoose } from "mongoose";
 import { asyncHandler } from "../utils/asynchHandler.js";
 import { ApiError } from "../utils/ApiErrors.js";
 import { Tweet } from "../models/tweet.model.js";
-import { ApiResponse } from "../utils/ApiResponse";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const createTweet = asyncHandler(async (req, res) => {
   //TODO: create tweet

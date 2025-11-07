@@ -1,8 +1,8 @@
 import { isValidObjectId } from "mongoose";
-import { asyncHandler } from "../utils/asynchHandler";
-import { ApiError } from "../utils/ApiErrors";
-import { Playlist } from "../models/playlist.model";
-import { ApiResponse } from "../utils/ApiResponse";
+import { asyncHandler } from "../utils/asynchHandler.js";
+import { ApiError } from "../utils/ApiErrors.js";
+import { Playlist } from "../models/playlist.model.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const createPlaylist = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
